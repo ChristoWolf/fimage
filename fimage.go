@@ -41,6 +41,7 @@ func init() {
 // as image.Image.
 // Supported file types: gif, jpeg, jpg, png.
 func ReadImage(filePath string) (image.Image, error) {
+	filePath = filepath.Clean(filePath)
 	fmt.Fprintf(LogSink, "provided file path: %s\n", filePath)
 	fmt.Fprintln(LogSink, "checking if file type is supported")
 	if fileType := ParseFileType(filePath); fileType != gifExt &&
@@ -50,7 +51,7 @@ func ReadImage(filePath string) (image.Image, error) {
 		return nil, fmt.Errorf("unsupported file type '%s'", fileType)
 	}
 	fmt.Fprintln(LogSink, "opening file")
-	f, err := os.Open(filepath.Clean(filePath))
+	f, err := os.Open(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file: %v", err)
 	}
@@ -67,6 +68,7 @@ func ReadImage(filePath string) (image.Image, error) {
 // Writes an image.Image to the provided file path if possible.
 // Supported file types: gif, jpeg, jpg, png.
 func WriteImage(i image.Image, filePath string) error {
+	filePath = filepath.Clean(filePath)
 	fmt.Fprintf(LogSink, "provided target file path: %s\n", filePath)
 	fmt.Fprintln(LogSink, "detecting desired target encoding")
 	fileType := ParseFileType(filePath)
@@ -76,7 +78,7 @@ func WriteImage(i image.Image, filePath string) error {
 		return fmt.Errorf("file type %s is not supported", fileType)
 	}
 	fmt.Fprintln(LogSink, "creating file")
-	f, err := os.Create(filepath.Clean(filePath))
+	f, err := os.Create(filePath)
 	if err != nil {
 		return fmt.Errorf("failed to create file: %v", err)
 	}
