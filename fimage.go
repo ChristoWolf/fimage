@@ -13,6 +13,7 @@ import (
 	"image/png"
 )
 
+// Supported image file types.
 const (
 	gifExt  = "gif"
 	jpegExt = "jpeg"
@@ -20,29 +21,42 @@ const (
 	pngExt  = "png"
 )
 
-var Writer io.Writer
+// Instance of an io.LogSink implementation which will be used for logging.
+// By default, this will be initialized as io.Discard, but can be set
+// to any desired io.LogSink implementation.
+// This is designed to NOT be a logger instance, because the package user
+// might be using a logging library which does not offer drop-in replacement
+// of the log standard package.
+var LogSink io.Writer
 
+// Initialized the package upon use.
+// For now, this is limited to initialization of LogSink to io.Discard.
+// See LogSink for details.
 func init() {
-	Writer = io.Discard
+	LogSink = io.Discard
 }
 
+// Reads the image file from the provided file path if possible.
+// If successful, the first return value represents the image
+// as image.Image.
+// Supported file types: gif, jpeg, jpg, png.
 func ReadImage(filePath string) (image.Image, error) {
-	fmt.Fprintf(Writer, "provided file path: %s\n", filePath)
-	fmt.Fprintln(Writer, "checking if file type is supported")
+	fmt.Fprintf(LogSink, "provided file path: %s\n", filePath)
+	fmt.Fprintln(LogSink, "checking if file type is supported")
 	if fileType := ParseFileType(filePath); fileType != gifExt &&
 		fileType != jpegExt &&
 		fileType != jpgExt &&
 		fileType != pngExt {
 		return nil, fmt.Errorf("unsupported file type '%s'", fileType)
 	}
-	fmt.Fprintln(Writer, "opening file")
+	fmt.Fprintln(LogSink, "opening file")
 	f, err := os.Open(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file: %v", err)
 	}
 	defer f.Close()
-	defer fmt.Fprintln(Writer, "closing file")
-	fmt.Fprintln(Writer, "decoding file")
+	defer fmt.Fprintln(LogSink, "closing file")
+	fmt.Fprintln(LogSink, "decoding file")
 	image, _, err := image.Decode(f)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode file as image: %v", err)
@@ -50,23 +64,25 @@ func ReadImage(filePath string) (image.Image, error) {
 	return image, err
 }
 
+// Writes an image.Image to the provided file path if possible.
+// Supported file types: gif, jpeg, jpg, png.
 func WriteImage(i image.Image, filePath string) error {
-	fmt.Fprintf(Writer, "provided target file path: %s\n", filePath)
-	fmt.Fprintln(Writer, "detecting desired target encoding")
+	fmt.Fprintf(LogSink, "provided target file path: %s\n", filePath)
+	fmt.Fprintln(LogSink, "detecting desired target encoding")
 	fileType := ParseFileType(filePath)
 	switch fileType {
 	case gifExt, jpegExt, jpgExt, pngExt:
 	default:
 		return fmt.Errorf("file type %s is not supported", fileType)
 	}
-	fmt.Fprintln(Writer, "creating file")
+	fmt.Fprintln(LogSink, "creating file")
 	f, err := os.Create(filePath)
 	if err != nil {
 		return fmt.Errorf("failed to create file: %v", err)
 	}
 	defer f.Close()
-	defer fmt.Fprintln(Writer, "closing file")
-	fmt.Fprintf(Writer, "encoding file as %s\n", fileType)
+	defer fmt.Fprintln(LogSink, "closing file")
+	fmt.Fprintf(LogSink, "encoding file as %s\n", fileType)
 	switch fileType {
 	case gifExt:
 		err = gif.Encode(f, i, nil)
@@ -81,6 +97,8 @@ func WriteImage(i image.Image, filePath string) error {
 	return nil
 }
 
+// Parses a file's file type from its name or path.
+// Returns an empty string if filePath does not contain a file type extension.
 func ParseFileType(filePath string) string {
 	return strings.ToLower(strings.TrimPrefix(filepath.Ext(filePath), "."))
 }
