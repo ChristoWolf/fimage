@@ -41,6 +41,7 @@ func init() {
 // as image.Image.
 // Supported file types: gif, jpeg, jpg, png.
 func ReadImage(filePath string) (image.Image, error) {
+	filePath = filepath.Clean(filePath)
 	fmt.Fprintf(LogSink, "provided file path: %s\n", filePath)
 	fmt.Fprintln(LogSink, "checking if file type is supported")
 	if fileType := ParseFileType(filePath); fileType != gifExt &&
@@ -67,6 +68,7 @@ func ReadImage(filePath string) (image.Image, error) {
 // Writes an image.Image to the provided file path if possible.
 // Supported file types: gif, jpeg, jpg, png.
 func WriteImage(i image.Image, filePath string) error {
+	filePath = filepath.Clean(filePath)
 	fmt.Fprintf(LogSink, "provided target file path: %s\n", filePath)
 	fmt.Fprintln(LogSink, "detecting desired target encoding")
 	fileType := ParseFileType(filePath)
@@ -100,5 +102,6 @@ func WriteImage(i image.Image, filePath string) error {
 // Parses a file's file type from its name or path.
 // Returns an empty string if filePath does not contain a file type extension.
 func ParseFileType(filePath string) string {
+	filePath = filepath.Clean(filePath)
 	return strings.ToLower(strings.TrimPrefix(filepath.Ext(filePath), "."))
 }
