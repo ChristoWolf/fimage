@@ -1,3 +1,4 @@
+// Simple Go package for encoding and decoding images directly from and to file paths.
 package fimage
 
 import (
@@ -34,6 +35,12 @@ var LogSink io.Writer
 // See LogSink for details.
 func init() {
 	LogSink = io.Discard
+}
+
+// Parses a file's file type from its name or path.
+// Returns an empty string if filePath does not contain a file type extension.
+func ParseFileType(filePath string) string {
+	return strings.ToLower(strings.TrimPrefix(filepath.Ext(filePath), "."))
 }
 
 // Reads the image file from the provided file path if possible.
@@ -97,10 +104,4 @@ func WriteImage(i image.Image, filePath string) error {
 		return fmt.Errorf("failed to encode file: %v", err)
 	}
 	return nil
-}
-
-// Parses a file's file type from its name or path.
-// Returns an empty string if filePath does not contain a file type extension.
-func ParseFileType(filePath string) string {
-	return strings.ToLower(strings.TrimPrefix(filepath.Ext(filePath), "."))
 }
