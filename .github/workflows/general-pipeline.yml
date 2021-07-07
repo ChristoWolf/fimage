@@ -30,7 +30,8 @@ jobs:
     - name: Publish coverage report
       uses: codecov/codecov-action@v1.5.2
       with:
-        file: ./letsseewtfisup.txt
+        directory: GITHUB_WORKSPACE
+        files: coverage.txt
         fail_ci_if_error: true
         verbose: true
       
