@@ -26,6 +26,8 @@ jobs:
     # See https://about.codecov.io/blog/getting-started-with-code-coverage-for-golang/.
     - name: Test and cover
       run: go test -v ./... -race -coverprofile=coverage.txt -covermode=atomic
+
+    - script: dir
       
     - name: Publish coverage report
       uses: codecov/codecov-action@v1.5.2
