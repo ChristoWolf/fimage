@@ -28,7 +28,7 @@ jobs:
       run: go test -v ./... -race -coverprofile=coverage.txt -covermode=atomic
 
     - name: OOF
-      -run: dir
+      run: dir
       
     - name: Publish coverage report
       uses: codecov/codecov-action@v1.5.2
