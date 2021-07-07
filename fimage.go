@@ -22,9 +22,9 @@ const (
 	pngExt  = "png"
 )
 
-// Instance of an io.LogSink implementation which will be used for logging.
+// Instance of an io.Writer implementation which will be used for logging.
 // By default, this will be initialized as io.Discard, but can be set
-// to any desired io.LogSink implementation.
+// to any desired io.Writer implementation.
 // This is designed to NOT be a logger instance, because the package user
 // might be using a logging library which does not offer drop-in replacement
 // of the log standard package.
