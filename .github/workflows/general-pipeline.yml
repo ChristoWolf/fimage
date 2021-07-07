@@ -25,11 +25,12 @@ jobs:
 
     # See https://about.codecov.io/blog/getting-started-with-code-coverage-for-golang/.
     - name: Test and cover
-      run: go test -v ./... -race -coverprofile=cover.out -covermode=atomic
+      run: go test -v ./... -race -coverprofile=coverage.txt -covermode=atomic
       
     - name: Publish coverage report
       uses: codecov/codecov-action@v1.5.2
       with:
+        file: ./coverage.txt
         fail_ci_if_error: true
         verbose: true
       
