@@ -34,7 +34,7 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         directory: GITHUB_WORKSPACE
-        files: coverage
+        files: ./coverage
         fail_ci_if_error: true
         verbose: true
       
